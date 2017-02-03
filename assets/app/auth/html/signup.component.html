@@ -1,0 +1,39 @@
+<selection class="col-md-8 col-md-offset-2"  *ngIf="!hasLogin()">
+    <form class="form-horizontal" (ngSubmit)="onSubmit()" #signupForm="ngForm">
+
+        <div class="form-group">
+            <label for="email" class="col-sm-2 control-label">Email</label>
+            <div class="col-sm-10">
+                <input type="email" class="form-control" id="email" required
+                       [ngModel]="model?.email" (ngModelChange)="model.email=$event" name="email" placeholder="test@test.com">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="firstName" class="col-sm-2 control-label">First Name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="firstName" required
+                       [ngModel]="model?.firstName" (ngModelChange)="model.firstName=$event" name="firstName" placeholder="First Name">
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label for="lastName" class="col-sm-2 control-label">Last Name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="lastName" required
+                       [ngModel]="model?.lastName" (ngModelChange)="model.lastName=$event" name="lastName" placeholder="Last Name">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password" class="col-sm-2 control-label">Password</label>
+            <div class="col-sm-10">
+                <input type="password" class="form-control" id="password" required
+                       [ngModel]="model?.password" (ngModelChange)="model.password=$event" name="password" placeholder="Password">
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" [disabled]="!signupForm.form.valid">Sign Up</button>
+    </form>
+</selection>

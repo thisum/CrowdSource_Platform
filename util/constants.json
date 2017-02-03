@@ -1,0 +1,67 @@
+{
+  "gcm_api_key": "Your API Key",
+  "error": {
+    "msg_invalid_param": {
+      "result": "error",
+      "message": "Invalid request parameters."
+    },
+    "msg_empty_param": {
+      "result": "error",
+      "message": "Parameters should not be empty."
+    },
+    "msg_reg_failure": {
+      "result": "error",
+      "message": "Registration failure."
+    },
+    "msg_reg_exists": {
+      "result": "error",
+      "message": "Device already registered."
+    },
+    "msg_del_failure": {
+      "result": "error",
+      "message": "Unable to remove device"
+    },
+    "msg_save_error": {
+      "result": "error",
+      "message": "Unable to save"
+    },
+    "msg_send_failure": {
+      "result": "error",
+      "message": "Unable to send message"
+    },
+    "msg_image_failure": {
+      "result": "error",
+      "message": "Unable decode image"
+    },
+    "msg_find_failure": {
+      "result": "error",
+      "message": "Error in finding object"
+    },
+    "msg_find_user_failure": {
+      "result": "error",
+      "message": "User not found"
+    },
+    "msg_find_user_invalid": {
+      "result": "error",
+      "message": "Invalid username/password"
+    }
+  },
+  "success": {
+    "msg_reg_success": {
+      "result": "success",
+      "message": "Device successfully registered."
+    },
+    "msg_del_success": {
+      "result": "success",
+      "message": "Device successfully removed"
+    },
+    "msg_save_success": {
+      "result": "success",
+      "message": "Saved successfully"
+    },
+    "msg_send_success": {
+      "result": "success",
+      "message": "Message successfully sent !"
+    }
+  }
+}

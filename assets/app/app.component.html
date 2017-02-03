@@ -1,0 +1,14 @@
+<div class="container-fluid">
+    <fr-header></fr-header>
+    <div class="container-fluid" *ngIf="!hasLogin()">
+        <header class="row spacing">
+            <nav class="col-md-8 col-md-offset-2">
+                <ul class="nav nav-tabs  navbar-right">
+                    <li><a routerLink="/signin" routerLinkActive="active">SignIn</a></li>
+                    <li><a routerLink="/signup" routerLinkActive="active">SignUp</a></li>
+                </ul>
+            </nav>
+        </header>
+    </div>
+    <router-outlet></router-outlet>
+</div>

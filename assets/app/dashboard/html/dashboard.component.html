@@ -1,0 +1,30 @@
+<div class="container-fluid">
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th class="col-md-2">Request Time</th>
+            <th class="col-md-4">Image</th>
+            <th class="col-md-2">Question</th>
+            <th class="col-md-3">Response</th>
+            <th class="col-md-1"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let req of requests">
+            <th class="col-md-2" scope="row">{{req.requestTime}}</th>
+            <td class="col-md-4"><img id="img" src="data:image/png;base64,{{req.image}}" /></td>
+            <td class="col-md-2">{{req.question}}</td>
+            <td class="col-md-3"><textarea [(ngModel)]="req.response" class="col-md-12" rows="15"></textarea></td>
+            <td class="col-md-1"><button (click)="onSubmitAns(req)">Submit</button></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="row">
+        <button class="btn btn-primary" (click)="onLoad()">Load</button>
+    </div>
+</div>
+<router-outlet></router-outlet>
+
+
