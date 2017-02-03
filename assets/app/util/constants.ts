@@ -2,7 +2,7 @@
  * Created by Thisum on 8/16/2016.
  */
 
-export const BASE_URL = 'http://localhost:8080';
+export const BASE_URL = 'http://52.77.247.133:8080';
 
 /**
  * Defines response statuses. Should be used to determine status of the server communication
