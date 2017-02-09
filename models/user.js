@@ -10,7 +10,8 @@ var userSchema = mongoose.Schema({
     email: {type: String, required: true, unique: true},
     firstName: String,
     lastName: String,
-    password: {type: String, required: true}
+    password: {type: String, required: true},
+    admin: Boolean
 });
 
 userSchema.plugin(uniqueValidator);

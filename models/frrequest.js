@@ -8,9 +8,9 @@ var frRequestSchema = mongoose.Schema({
 
     deviceId        : String,
     requestType     : String,
-    requestTime     : Date,
+    requestTime     : Number,
     responded       : {type:Boolean, required: true, default: false},
-    responseTime    : Date,
+    responseTime    : Number,
     question        : String,
     response        : String,
     respondedBy     : String,

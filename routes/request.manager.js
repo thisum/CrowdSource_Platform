@@ -11,15 +11,12 @@ var router = express.Router();
 
 router.post('/', rawBody, function (req, res, next) {
 
-    var app = req.query.app_type;
-    var question = req.query.question;
-    var deviceId = req.query.device_id;
     var buf = req.rawBody;
 
-    if (req.rawBody && req.bodyLength > 0) {
+    if (buf && req.bodyLength > 0) {
         try {
             var img = buf.toString('base64');
-            saveRequest(deviceId, getAppName(parseInt(app)), question, img, function (result) {
+            saveRequest(req.query, img, function (result) {
                 res.json(result);
             });
         }
@@ -50,15 +47,27 @@ function rawBody(req, res, next) {
     });
 }
 
-function saveRequest(deviceId, reqType, question, img, callback) {
+function saveRequest(query, img, callback) {
+
+    var deviceId = query.device_id;
+    var app_type = getAppName(parseInt(query.app_type));
+    var responded = hasResponded(app_type);
+    var api = query.api;
+    var response = query.response;
+    var question = query.question;
+    var request_time = parseInt(query.request_time);
+    var response_time = parseInt(query.response_time);
 
     var newRequest = new frRequest({
-
         deviceId: deviceId,
-        requestType: reqType,
-        requestTime: Date.now(),
+        requestType: app_type,
+        requestTime: request_time,
+        responded: responded,
+        responseTime: response_time,
         question: question,
-        image: img
+        response: response,
+        image: img,
+        api: api
     });
 
     newRequest.save(function (err, res) {
@@ -83,5 +92,10 @@ function getAppName( app ) {
             return "";
     }
 }
+
+function hasResponded(appType){
+    return appType != Constants.REQ_TYPE_CRWD;
+}
+
 
 module.exports = router;
