@@ -12,6 +12,7 @@ router.post('/', function (req, res, next) {
     var deviceName = req.body.deviceName;
     var deviceId = req.body.deviceId;
     var registrationId = req.body.registrationId;
+    var deviceOwner = req.body.deviceOwner;
 
     if (typeof deviceName == 'undefined' || typeof deviceId == 'undefined' || typeof registrationId == 'undefined') {
         console.error(constants.error.msg_invalid_param.message);
@@ -22,18 +23,19 @@ router.post('/', function (req, res, next) {
         res.json(constants.error.msg_empty_param);
     }
     else {
-        registerDevice(deviceName, deviceId, registrationId, function(result) {
+        registerDevice(deviceName, deviceId, registrationId, deviceOwner, function(result) {
             res.json(result);
         })
     }
 });
 
-function registerDevice(deviceName, deviceId, registrationId, callback) {
+function registerDevice(deviceName, deviceId, registrationId, deviceOwner, callback) {
 
     var newDevice = new Device({
         deviceName: deviceName,
         deviceId: deviceId,
-        registrationId: registrationId
+        registrationId: registrationId,
+        deviceOwner: deviceOwner
     });
 
     Device.findOne({deviceId: deviceId}, function (err, device) {

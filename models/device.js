@@ -5,9 +5,10 @@ var mongoose = require('mongoose');
 
 var deviceSchema = mongoose.Schema({
 
-    deviceName         : String,
+    deviceName      : String,
     deviceId        : String,
-    registrationId    : String
+    registrationId  : String,
+    deviceOwner     : String
 });
 
 module.exports = mongoose.model('device', deviceSchema);
