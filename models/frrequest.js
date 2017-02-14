@@ -6,7 +6,7 @@ var mongoose = require('mongoose');
 
 var frRequestSchema = mongoose.Schema({
 
-    deviceId        : String,
+    deviceId        : {type: mongoose.Schema.Types.ObjectId, ref: 'device'},
     requestType     : String,
     requestTime     : Number,
     responded       : {type:Boolean, required: true, default: false},
@@ -15,7 +15,8 @@ var frRequestSchema = mongoose.Schema({
     response        : String,
     respondedBy     : String,
     image           : String,
-    api             : String
+    api             : String,
+    responseStatus : String
 });
 
 module.exports = mongoose.model('frrequest', frRequestSchema);

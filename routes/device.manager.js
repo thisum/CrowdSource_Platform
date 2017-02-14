@@ -44,7 +44,7 @@ function registerDevice(deviceName, deviceId, registrationId, deviceOwner, callb
             console.error(err);
             callback(constants.error.msg_reg_failure);
         }
-        if (!device) {
+        else if (!device) {
             newDevice.save(function (err) {
                 if (err) {
                     console.error(err);

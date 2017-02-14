@@ -3,6 +3,7 @@
  */
 
 var frRequest = require('../models/frrequest');
+var device = require('../models/device');
 var constants = require('../util/constants.json');
 var express = require('express');
 var Constants = require('./constants');
@@ -57,27 +58,57 @@ function saveRequest(query, img, callback) {
     var question = query.question;
     var request_time = parseInt(query.request_time);
     var response_time = parseInt(query.response_time);
+    var response_status = query.response_status;
 
-    var newRequest = new frRequest({
-        deviceId: deviceId,
-        requestType: app_type,
-        requestTime: request_time,
-        responded: responded,
-        responseTime: response_time,
-        question: question,
-        response: response,
-        image: img,
-        api: api
-    });
-
-    newRequest.save(function (err, res) {
-        if (err) {
-            console.error(err);
+    findDevice( deviceId, function(result){
+        if(!result){
             callback(constants.error.msg_save_error);
-        } else {
-            callback(constants.success.msg_save_success);
         }
+        else{
+
+            var newRequest = new frRequest({
+                deviceId: result,
+                requestType: app_type,
+                requestTime: request_time,
+                responded: responded,
+                responseTime: response_time,
+                question: question,
+                response: response,
+                image: img,
+                api: api,
+                responseStatus: response_status
+            });
+
+
+            newRequest.save(function (err, res) {
+                if (err) {
+                    console.error(err);
+                    callback(constants.error.msg_save_error);
+                } else {
+                    callback(constants.success.msg_save_success);
+                }
+            });
+        }
+
     });
+}
+
+function findDevice(deviceId, callback){
+
+    device.findOne({deviceId: deviceId}, function (err, device) {
+        if( err ){
+            console.error(err);
+            callback(null);
+        }
+        else if( !device ){
+            callback(null);
+        }
+        else{
+            callback(device);
+        }
+
+    });
+
 }
 
 function getAppName( app ) {
