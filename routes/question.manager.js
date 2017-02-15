@@ -6,7 +6,6 @@ var tokenGenerator = require('jsonwebtoken');
 var gcm = require('node-gcm');
 var request = require('request');
 var frRequest = require('../models/frrequest');
-var Device = require('../models/device');
 var Constants = require('./constants');
 var router = express.Router();
 
@@ -47,35 +46,23 @@ router.patch('/answer', function (req, res, next) {
     var response = req.body.response;
     var respondedBy = req.body.user.email;
 
-    hasRequestNotServed(requestId, response, respondedBy, function (deviceId) {
+    hasRequestNotServed(requestId, response, respondedBy, function (registrationId) {
         var ans = '';
 
-        if (deviceId == -1) {
+        if (registrationId == -1) {
             ans = "Error while sending the response. Try again later";
             return res.status(500).json({status: Constants.RESPONSE_CODE_FAIL, message: ans});
         }
-        else if (deviceId == 0) {
+        else if (registrationId == 0) {
             ans = "Request has already served";
             return res.status(500).json({status: Constants.RESPONSE_CODE_WARNING, message: ans});
         }
         else {
-            findDevice(deviceId, function (registrationId) {
-                if (registrationId == -1) {
-                    ans = "Error while searching responding device";
-                    return res.status(500).json({status: Constants.RESPONSE_CODE_FAIL, message: ans});
-                }
-                else if (registrationId == -2) {
-                    ans = "Responding device cannot be found";
-                    return res.status(500).json({status: Constants.RESPONSE_CODE_FAIL, message: ans});
-                }
-                else {
-                    sendMessage(response, registrationId, function (result) {
-                        console.log(result);
-                        ans = "Response sent to the device successfully";
-                        return res.status(200).json({status: Constants.RESPONSE_CODE_SUCCESS, result: ans});
-                    });
-                }
-            })
+            sendMessage(response, registrationId, function (result) {
+                console.log(result);
+                ans = "Response sent to the device successfully";
+                return res.status(200).json({status: Constants.RESPONSE_CODE_SUCCESS, result: ans});
+            });
         }
     });
 
@@ -83,53 +70,42 @@ router.patch('/answer', function (req, res, next) {
 
 function hasRequestNotServed(requestId, response, respondedBy, callback) {
 
-    frRequest.findOne({_id: requestId, responded: false}, function (err, frReq) {
-        if (err) {
-            console.error(err);
-            callback(-1);
-        }
-        else if (frReq) {
 
-            frReq.responded = true;
-            frReq.responseTime = Date.now();
-            frReq.response = response;
-            frReq.respondedBy = respondedBy;
+    frRequest.findOne({_id: requestId, responded: false})
+        .populate('deviceId')
+        .exec(function (err, frReq) {
+            if (err) {
+                console.error(err);
+                callback(-1);
+            }
+            else if (frReq) {
 
-            frReq.save(function (err, updatedReq) {
-                if (err) {
-                    console.error(err);
-                    callback(-1);
-                }
-                else {
-                    callback(updatedReq.deviceId);
-                }
-            });
-        }
-        else {
-            callback(0);
-        }
-    });
+                frReq.responded = true;
+                frReq.responseTime = Date.now();
+                frReq.response = response;
+                frReq.respondedBy = respondedBy;
+
+                frReq.save(function (err, updatedReq) {
+                    if (err) {
+                        console.error(err);
+                        callback(-1);
+                    }
+                    else if(!updatedReq){
+                        callback(-1);
+                    }
+                    else {
+                        callback(updatedReq.deviceId.registrationId);
+                    }
+                });
+            }
+            else {
+                callback(0);
+            }
+        });
 }
 
-function findDevice(deviceId, callback) {
-
-    Device.findOne({deviceId: deviceId}, function (err, device) {
-        if (err) {
-            console.error(err);
-            callback(-1);
-        }
-        else if (!device) {
-            console.error("no device found");
-            callback(-2);
-        }
-        else {
-            callback(device.registrationId);
-        }
-    });
-}
 
 function sendMessage(message, registrationId, callback) {
-
 
     request({
         url: 'https://fcm.googleapis.com/fcm/send',
@@ -159,7 +135,6 @@ function sendMessage(message, registrationId, callback) {
             callback(response);
         }
     });
-
 }
 
 module.exports = router;
