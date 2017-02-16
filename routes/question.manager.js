@@ -58,7 +58,7 @@ router.patch('/answer', function (req, res, next) {
             return res.status(500).json({status: Constants.RESPONSE_CODE_WARNING, message: ans});
         }
         else {
-            sendMessage(response, registrationId, function (result) {
+            sendMessage(response, registrationId, requestId, function (result) {
                 console.log(result);
                 ans = "Response sent to the device successfully";
                 return res.status(200).json({status: Constants.RESPONSE_CODE_SUCCESS, result: ans});
@@ -69,7 +69,6 @@ router.patch('/answer', function (req, res, next) {
 });
 
 function hasRequestNotServed(requestId, response, respondedBy, callback) {
-
 
     frRequest.findOne({_id: requestId, responded: false})
         .populate('deviceId')
@@ -105,7 +104,7 @@ function hasRequestNotServed(requestId, response, respondedBy, callback) {
 }
 
 
-function sendMessage(message, registrationId, callback) {
+function sendMessage(message, registrationId, requestId, callback) {
 
     request({
         url: 'https://fcm.googleapis.com/fcm/send',
@@ -124,17 +123,45 @@ function sendMessage(message, registrationId, callback) {
     }, function (error, response, body) {
         if (error) {
             console.error(error, response, body);
+            updateRequestStatus(requestId, "FAIL", error);
             callback(error);
         }
         else if (response.statusCode >= 400) {
-            console.error('HTTP Error: ' + response.statusCode + ' - ' + response.statusMessage + '\n' + body);
+            var error = 'HTTP Error: ' + response.statusCode + ' - ' + response.statusMessage + '\n' + body;
+            console.error(error);
+            updateRequestStatus(requestId, "FAIL", error);
             callback(response.statusCode);
         }
         else {
-            console.log('Done!')
+            console.log('Done!');
+            updateRequestStatus(requestId, "SUCCESS", "");
             callback(response);
         }
     });
 }
+
+function updateRequestStatus(requestId, status, remarks){
+
+    frRequest.findOne({_id: requestId}, function (err, frReq) {
+        if (err) {
+            console.error(err);
+        }
+        else if (frReq) {
+
+            frReq.responseStatus = status;
+            frReq.remarks = remarks;
+
+            frReq.save(function (err, updatedReq) {
+                if (err) {
+                    console.error(err);
+                }
+                else {
+                    console.log(status);
+                }
+            });
+        }
+    });
+}
+
 
 module.exports = router;

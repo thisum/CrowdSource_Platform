@@ -16,7 +16,9 @@ var frRequestSchema = mongoose.Schema({
     respondedBy     : String,
     image           : String,
     api             : String,
-    responseStatus : String
+    responseStatus  : String,
+    remarks         : String,
+    user            : String
 });
 
 module.exports = mongoose.model('frrequest', frRequestSchema);

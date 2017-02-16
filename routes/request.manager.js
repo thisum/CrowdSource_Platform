@@ -59,6 +59,7 @@ function saveRequest(query, img, callback) {
     var request_time = parseInt(query.request_time);
     var response_time = parseInt(query.response_time);
     var response_status = query.response_status;
+    var user = query.user;
 
     findDevice( deviceId, function(result){
         if(!result){
@@ -76,7 +77,8 @@ function saveRequest(query, img, callback) {
                 response: response,
                 image: img,
                 api: api,
-                responseStatus: response_status
+                responseStatus: response_status,
+                user: user
             });
 
 
