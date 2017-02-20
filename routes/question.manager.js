@@ -37,7 +37,7 @@ router.get('/load', function (req, res, next) {
         else {
             return res.status(200).json({status: Constants.RESPONSE_CODE_SUCCESS, result: docs});
         }
-    });
+    }).sort({requestTime: -1});
 });
 
 router.patch('/answer', function (req, res, next) {
